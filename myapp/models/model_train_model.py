@@ -38,6 +38,16 @@ class Training_Model(Model,AuditMixinNullable,MyappModelBase):
     api_type = Column(String(100),comment='api类型')
     expand = Column(Text(65536), default='{}',comment='扩展参数')
 
+    # ---- Phase 4.1 实验追踪字段 ----
+    # 与 metrics(json) 配套，记录实验完整上下文。新增字段全部带默认值，
+    # 历史数据无需回填即可继续工作；上层 service 见 myapp/services/training_model_service.py
+    params = Column(Text(65536), default='{}', comment='训练超参（JSON dict）')
+    artifacts = Column(Text(65536), default='[]', comment='训练产物路径列表（JSON list）')
+    log_url = Column(String(500), default='', comment='训练日志链接（外部 TensorBoard / 对象存储 / Argo logs）')
+    status = Column(String(32), default='success', comment='训练状态：pending / running / success / failed / aborted')
+    experiment_id = Column(String(100), default='', index=True, comment='实验分组 ID，同实验下多个 run 可纵向对比')
+    parent_run_id = Column(String(100), default='', comment='父 run id，用于增量训练 / 微调链路追溯')
+
     def __repr__(self):
         return self.name
 
