@@ -13,6 +13,15 @@
 
 https://github.com/data-infra/cube-studio/wiki
 
+## 部署模式补充（精简版 / 基础设施外部化）
+
+已提交的部署改造 PR 增加了「精简版」部署模式：当企业已经统一维护 MySQL、PostgreSQL、Redis、Prometheus、Grafana、Harbor、HDFS 等基础设施时，可仅部署 Cube Studio 控制面组件（Web/API、Notebook 管理、训练任务管理、模型注册、推理服务管理），避免重复建设。
+
+- 全量部署（内置基础设施）：`install/kubernetes/start.sh`
+- 精简部署（依赖外部基础设施）：`install/kubernetes/start-lite.sh`
+- 外部服务配置示例：`install/kubernetes/external-services.example.yaml`
+- 详细说明：`install/README.md` 中「Cube Studio 精简版（基础设施外部化）」章节
+
 # 开源共建
 
  学习、部署、体验、开源建设、商业合作 欢迎来撩。或添加微信luanpeng1234，备注<开源建设>
@@ -389,4 +398,3 @@ export MLP_WORKER_0_PORT=$MASTER_PORT
  - 3、避免边缘节点的运维成本
 
 ![图片 1](https://user-images.githubusercontent.com/20157705/170262037-12ad086a-c427-4746-a0fa-ce3bc1586729.png)
-
