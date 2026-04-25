@@ -40,7 +40,6 @@ if conf.get('DATA_DIR', ''):
     if not os.path.exists(conf['DATA_DIR']):
         os.makedirs(conf['DATA_DIR'], exist_ok=True)
 
-print(conf.get('SQLALCHEMY_DATABASE_URI', ''))
 
 #################################################################
 # Handling manifest file logic at app start
