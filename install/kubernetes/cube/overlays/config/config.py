@@ -53,12 +53,6 @@ WTF_CSRF_EXEMPT_LIST = ["myapp.views.core.log"]
 DEBUG = os.environ.get("FLASK_ENV") == "development"
 FLASK_USE_RELOAD = True
 
-# MLOps-Only 模式：把 SqlLab / 元数据 / 维表 / ETL 编排 / RAG 知识库 等
-# 数据平台职责让给 DolphinScheduler + Hadoop YARN + Spark 3.5 体系，
-# Cube Studio 聚焦 MLOps 控制面（开发 / 训练 / 模型 / 推理 / 资源）。
-# 关闭后会恢复对应模块的视图注册与导航菜单。
-MLOPS_ONLY_MODE = os.environ.get("MLOPS_ONLY_MODE", "true").lower() != "false"
-
 # Myapp allows server-side python stacktraces to be surfaced to the
 # user when this feature is on. This may has security implications
 # and it's more secure to turn it off in production settings.
