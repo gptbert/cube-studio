@@ -72,3 +72,56 @@
 
 参考install/docker/README.md
 
+
+---
+
+# Cube Studio 精简版（基础设施外部化）
+
+当企业已经由 DBA/OPS 统一维护 MySQL、PostgreSQL、Redis、Elasticsearch、Kafka、Prometheus、Grafana、HDFS、Harbor、DolphinScheduler、K8s 时，建议将 Cube Studio 收敛为 **MLOps 控制面**，不再重复部署基础设施。
+
+## 定位
+
+Cube Studio 精简版 = Web/API + Notebook 管理 + 训练任务管理 + 模型注册 + 推理服务管理 + K8s 资源控制。
+
+## 不再自带部署
+
+- mysql / postgresql
+- redis
+- elasticsearch / kibana
+- prometheus / grafana
+- sqllab / 数据分析 / 数据地图 / etl pipeline / hive
+
+## 推荐保留的控制面 Pod（infra）
+
+- kubeflow-dashboard-frontend
+- kubeflow-dashboard
+- kubeflow-dashboard-worker
+- kubeflow-dashboard-schedule
+- kubeflow-watch
+
+## 推荐部署脚本
+
+- 全量部署（包含内置基础设施）：`install/kubernetes/start.sh`
+- 精简部署（依赖外部基础设施）：`install/kubernetes/start-lite.sh`
+
+> 精简部署前，请先准备外部服务连接配置，可参考：
+> `install/kubernetes/external-services.example.yaml`
+
+## 外部服务接入建议
+
+- 元数据库：MySQL 或 PostgreSQL（二选一，不建议同时作为平台元数据库）
+- 异步与缓存：Redis（建议独立 DB index 或 key 前缀）
+- 镜像仓库：Harbor
+- 数据与模型产物：HDFS（MinIO 仅保留为可选小对象/Artifact 中转）
+- 监控：Prometheus + Grafana（复用现有监控体系）
+- ES / Kafka：作为可选增强能力，不作为第一阶段硬依赖
+
+## 推荐实施顺序
+
+1. 接入外部 MySQL/PG
+2. 接入外部 Redis
+3. 切换到 `start-lite.sh`
+4. 移除内置 MySQL/Redis/Prometheus/Grafana/ES 相关部署
+5. 接入 Harbor + HDFS
+6. 监控接入现有 Prometheus/Grafana
+7. ES/Kafka 按需用于日志检索、审计、事件流
