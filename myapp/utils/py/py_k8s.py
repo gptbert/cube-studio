@@ -62,7 +62,7 @@ class K8s():
         self.rbacvi = client.RbacAuthorizationV1Api(api_client)
         self.autoscalev2 = client.AutoscalingV2Api(api_client)
         self.autoscalev1 = client.AutoscalingV1Api(api_client)
-        self.v1.api_client.configuration.verify_ssl = False  # 只能设置 /usr/local/lib/python3.9/dist-packages/kubernetes/client/configuration.py:   self.verify_ssl= True ---> False
+        self.v1.api_client.configuration.verify_ssl = False  # 只能设置 /usr/local/lib/python3.12/dist-packages/kubernetes/client/configuration.py:   self.verify_ssl= True ---> False
         self.gpu_resource=conf.get('GPU_RESOURCE',{})
         self.vgpu_resource = conf.get('VGPU_RESOURCE', {})
         self.vgpu_drive_type = conf.get("VGPU_DRIVE_TYPE", "vgpu")
