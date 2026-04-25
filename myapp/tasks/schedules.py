@@ -29,7 +29,7 @@ from myapp.models.model_job import (
 )
 from myapp.models.model_notebook import Notebook
 from myapp.models.model_serving import InferenceService, Service
-from myapp.views.view_pipeline import run_pipeline,dag_to_pipeline
+from myapp.services.pipeline_service import run_pipeline, dag_to_pipeline
 from sqlalchemy import or_
 from myapp import security_manager
 
