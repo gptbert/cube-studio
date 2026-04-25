@@ -1,6 +1,6 @@
 # docker build --network=host -t ccr.ccs.tencentyun.com/cube-studio/wait-pod:v1 .
 # docker buildx build --platform linux/amd64,linux/arm64 -t ccr.ccs.tencentyun.com/cube-studio/wait-pod:v1 . --push
-FROM python:3.9
+FROM python:3.12
 
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND=noninteractive

@@ -649,7 +649,12 @@ class Myapp(BaseMyappView):
         # if conf.get('BABEL_DEFAULT_LOCALE','zh')=='en':
         #     menu = [projetc, data, dev, ml, service]
         # else:
-        menu = [projetc, data, dev, ml, service, aihub, chat]
+        # MLOps-Only 模式：数仓相关菜单（数据资产 / 数据智能）由 DolphinScheduler
+        # 体系承担，默认从导航中隐藏；如需恢复设置 MLOPS_ONLY_MODE=False
+        if conf.get('MLOPS_ONLY_MODE', True):
+            menu = [projetc, dev, ml, service, aihub]
+        else:
+            menu = [projetc, data, dev, ml, service, aihub, chat]
 
         if conf.get('MENU', []):
             menu = conf.get('MENU', [])
