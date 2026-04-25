@@ -25,6 +25,7 @@ from jinja2 import Environment, BaseLoader, DebugUndefined,Undefined
 import os
 from wtforms.validators import DataRequired, Length, Regexp
 from myapp.views.view_task import Task_ModelView_Api
+from myapp.services.pipeline_service import dag_to_pipeline, run_pipeline
 from sqlalchemy import or_
 from myapp.exceptions import MyappException
 from wtforms import BooleanField, IntegerField, StringField, SelectField
@@ -74,9 +75,6 @@ class Pipeline_Filter(MyappFilter):
             )
         )
 
-
-
-from myapp.services.pipeline_service import dag_to_pipeline, run_pipeline
 
 
 class Pipeline_ModelView_Base():

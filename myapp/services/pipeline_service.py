@@ -5,6 +5,7 @@ Extracted from view layer to let tasks depend on service layer directly.
 
 import datetime
 import json
+import logging
 import re
 import time
 import uuid
@@ -496,6 +497,12 @@ def run_pipeline(pipeline, workflow_json):
             k8s_client.delete_crd(group=crd_info['group'], version=crd_info['version'], plural=crd_info['plural'],namespace=namespace, name=crd_name)
             time.sleep(1)
 
+        k8s_client.create_crd(group=crd_info['group'], version=crd_info['version'], plural=crd_info['plural'],namespace=namespace, body=workflow_json)
+        pipeline.namespace=namespace
+        db.session.commit()
+    except Exception as e:
+        logging.exception("failed to create workflow crd %s in namespace %s", crd_name, namespace)
+        raise MyappException(str(e))
         crd = k8s_client.create_crd(group=crd_info['group'], version=crd_info['version'], plural=crd_info['plural'],namespace=namespace, body=workflow_json)
         pipeline.namespace=namespace
         db.session.commit()
