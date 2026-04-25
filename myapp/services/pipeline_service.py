@@ -503,5 +503,10 @@ def run_pipeline(pipeline, workflow_json):
     except Exception as e:
         logging.exception("failed to create workflow crd %s in namespace %s", crd_name, namespace)
         raise MyappException(str(e))
+        crd = k8s_client.create_crd(group=crd_info['group'], version=crd_info['version'], plural=crd_info['plural'],namespace=namespace, body=workflow_json)
+        pipeline.namespace=namespace
+        db.session.commit()
+    except Exception as e:
+        print(e)
 
     return crd_name
