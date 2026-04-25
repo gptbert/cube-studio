@@ -340,10 +340,9 @@ export default function TaskListManager(props?: IAppMenuItem) {
   };
 
   useEffect(() => {
-    const targetId = getParam("targetId");
-    const url = targetId
-      ? `/dimension_remote_table_modelview/${targetId}/api/`
-      : props?.url;
+    // 注：原 targetId → /dimension_remote_table_modelview/.. 的维表远端跳转已下线，
+    // 此处直接使用 props.url。
+    const url = props?.url;
     setLoadingAdd(true);
 
     getADUGTemplateApiInfo(url)

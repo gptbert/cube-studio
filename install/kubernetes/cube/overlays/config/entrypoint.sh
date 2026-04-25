@@ -30,8 +30,8 @@ if [ "$STAGE" = "build" ]; then
   cd /home/myapp/myapp/frontend && npm install && npm run build
   # 构建机器学习pipeline
   cd /home/myapp/myapp/vision && npm install && npm run build
-  # 构建数据ETL pipeline
-  cd /home/myapp/myapp/visionPlus && yarn && npm run build
+  # 注：原 visionPlus（数据 ETL pipeline 流程图编辑器）已下线，
+  # ETL 调度由 DolphinScheduler 体系承担。
 elif [ "$STAGE" = "dev" ]; then
   export FLASK_APP=myapp:app
 #  FLASK_ENV=development  flask run -p 80 --with-threads  --host=0.0.0.0

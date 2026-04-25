@@ -86,15 +86,8 @@ export const securitySettingConfig: IRouterConfigPlusItem[] = [
 ]
 
 export const innerDynamicRouterConfig: IRouterConfigPlusItem[] = [
-    {
-        path: '/dataSearch',
-        title: '数据查询',
-        key: 'data_search',
-        icon: '',
-        menu_type: 'innerRouter',
-        isCollapsed: true,
-        element: lazy2Compont(() => import("./pages/DataSearch/DataSearch"))
-    },
+    // 注：'/dataSearch'（SqlLab 在线查询）路由已下线，数据查询由 DolphinScheduler
+    // + 上游数仓 SQL 控制台承担。
     {
         path: '/commonRelation',
         title: '通用关系图',
