@@ -55,13 +55,14 @@ class Training_Model_ModelView_Base():
     base_permissions = ['can_add', 'can_edit', 'can_delete', 'can_list', 'can_show']
     base_order = ('changed_on', 'desc')
     order_columns = ['id']
-    list_columns = ['project', 'name', 'version', 'model_metric', 'framework', 'api_type', 'pipeline_url',
-                    'creator', 'modified', 'deploy']
+    list_columns = ['project', 'name', 'version', 'experiment_id', 'status', 'model_metric',
+                    'framework', 'api_type', 'pipeline_url', 'creator', 'modified', 'deploy']
     fixed_columns = ['deploy']
     search_columns = ['created_by', 'project', 'name', 'version', 'framework', 'api_type', 'pipeline_id', 'run_id',
-                      'path']
+                      'path', 'experiment_id', 'parent_run_id', 'status']
     add_columns = ['project', 'name', 'version', 'describe', 'path', 'framework', 'run_id', 'run_time', 'metrics',
-                   'md5', 'api_type', 'pipeline_id']
+                   'md5', 'api_type', 'pipeline_id',
+                   'experiment_id', 'parent_run_id', 'status', 'params', 'artifacts', 'log_url']
     edit_columns = add_columns
     show_columns = add_columns
     add_form_query_rel_fields = {
@@ -82,7 +83,13 @@ class Training_Model_ModelView_Base():
         "path": _("模型文件"),
         "framework": _("训练框架"),
         "api_type": _("推理框架"),
-        "deploy": _("发布")
+        "deploy": _("发布"),
+        "experiment_id": _("实验"),
+        "parent_run_id": _("父 run"),
+        "status": _("状态"),
+        "params": _("超参"),
+        "artifacts": _("产物"),
+        "log_url": _("日志链接"),
     }
 
     label_title = _('模型')
@@ -152,7 +159,45 @@ triton-server：框架:地址。onnx:模型文件地址model.onnx，pytorch:torc
             description= _("推理框架类型"),
             choices=[[x, x] for x in service_type_choices],
             validators=[DataRequired()]
-        )
+        ),
+        # ---- Phase 4.1 实验追踪字段表单 ----
+        'experiment_id': StringField(
+            _('实验 ID'),
+            widget=MyBS3TextFieldWidget(),
+            description=_('同一实验下的多次 run 可在实验追踪页纵向对比；留空表示不归入实验。'),
+            default='',
+        ),
+        'parent_run_id': StringField(
+            _('父 run id'),
+            widget=MyBS3TextFieldWidget(),
+            description=_('用于增量训练 / 微调链路追溯，可填上一个 run 的 run_id；留空表示根 run。'),
+            default='',
+        ),
+        'status': SelectField(
+            _('训练状态'),
+            description=_('训练当前状态'),
+            widget=Select2Widget(),
+            choices=[[s, s] for s in ['pending', 'running', 'success', 'failed', 'aborted']],
+            default='success',
+        ),
+        'params': StringField(
+            _('训练超参'),
+            widget=MyBS3TextAreaFieldWidget(rows=4),
+            description=_('JSON dict 格式，例如：{"lr": 0.001, "batch_size": 32, "epochs": 50}'),
+            default='{}',
+        ),
+        'artifacts': StringField(
+            _('训练产物'),
+            widget=MyBS3TextAreaFieldWidget(rows=3),
+            description=_('JSON list 格式，记录除主模型文件外的产物（如评估报告、混淆矩阵）路径。'),
+            default='[]',
+        ),
+        'log_url': StringField(
+            _('日志链接'),
+            widget=MyBS3TextFieldWidget(),
+            description=_('训练日志的外部链接，可指向 TensorBoard / 对象存储 / Argo logs 等'),
+            default='',
+        ),
     }
     edit_form_extra_fields = add_form_extra_fields
 
@@ -253,6 +298,48 @@ triton-server：框架:地址。onnx:模型文件地址model.onnx，pytorch:torc
         print(url)
         return redirect(url)
 
+
+    # ---- Phase 4.1 实验追踪：实验聚合 + run 对比 ----
+    @expose_api(description="按 experiment_id 拉取实验下的全部 run",
+                url="/experiment/<string:experiment_id>", methods=["GET"])
+    def list_experiment_runs(self, experiment_id):
+        from myapp.services import training_model_service
+        runs = training_model_service.list_runs_in_experiment(experiment_id)
+        payload = [
+            {
+                'id': r.id,
+                'run_id': r.run_id,
+                'name': r.name,
+                'version': r.version,
+                'status': r.status,
+                'parent_run_id': r.parent_run_id,
+                'framework': r.framework,
+                'metrics': training_model_service.parse_metrics(r.metrics),
+                'params': training_model_service.parse_params(r.params),
+                'artifacts': training_model_service.parse_artifacts(r.artifacts),
+                'log_url': r.log_url,
+                'changed_on': r.changed_on.strftime('%Y-%m-%d %H:%M:%S') if r.changed_on else '',
+            }
+            for r in runs
+        ]
+        return jsonify({'experiment_id': experiment_id, 'count': len(payload), 'runs': payload})
+
+    @expose_api(description="对比两个 run 的超参与指标差异",
+                url="/diff/<string:base_run_id>/<string:target_run_id>", methods=["GET"])
+    def diff_runs_api(self, base_run_id, target_run_id):
+        from myapp.services import training_model_service
+        base, target, payload = training_model_service.diff_two_runs_by_id(base_run_id, target_run_id)
+        if base is None or target is None:
+            return jsonify({
+                'error': 'run not found',
+                'base_found': base is not None,
+                'target_found': target is not None,
+            }), 404
+        return jsonify({
+            'base': {'run_id': base.run_id, 'name': base.name, 'version': base.version},
+            'target': {'run_id': target.run_id, 'name': target.name, 'version': target.version},
+            'diff': payload,
+        })
 
     # 划分数据历史版本
     def pre_list_res(self,res):
