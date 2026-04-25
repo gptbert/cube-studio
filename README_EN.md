@@ -32,8 +32,6 @@ tips:
 | template              | type | describe                                                                                     |
 |:----------------------| :---- |:---------------------------------------------------------------------------------------------|
 | linux                 | base | Custom stand-alone operating environment, free to implement all custom stand-alone functions | 
-| datax                 | import export | Import and export of heterogeneous data sources                                              | 
-| hadoop                | data processing | hdfs,hbase,sqoop,spark client                                                                |
 | sparkjob              | data processing | spark serverless                                                                             |
 | volcanojob            | data processing | volcano multi-machine distributed framework                                                  | 
 | ray                   | data processing | python ray multi-machine distributed framework                                               |

@@ -96,11 +96,8 @@ cube studio是 开源一站式云原生机器学习平台，目前主要包含
 
 | 模块     | 模板                    | 类型 | 文档地址 |
 |:-------|:----------------------| :---- |:---- |
-| 数据导入导出 | datax                 | 单机 | job-template/job/datax/README.md
 | 数据导入导出 | 数据集导入                 | 单机 | job-template/job/dataset/README.md
 | 数据导入导出 | 模型导入                  | 单机 | job-template/job/model_download/README.md
-| 数据预处理  | data-process          | 单机 | job-template/job/data-process/README.md
-| 数据处理工具 | hadoop                | 单机 | job-template/job/hadoop/README.md
 | 数据处理工具   | ray                   | 分布式 | job-template/job/ray/README.md
 | 数据处理工具   | volcanojob            | 分布式 | job-template/job/volcano/README.md
 | 特征处理   | feature-process       | 单机 | job-template/job/feature-process/README.md
