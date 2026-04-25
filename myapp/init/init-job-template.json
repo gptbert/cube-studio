@@ -17,8 +17,7 @@
           "item_type": "str",
           "label": "镜像",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "ccr.ccs.tencentyun.com/cube-studio/ubuntu-gpu:cuda11.8.0-cudnn8-python3.9",
           "placeholder": "",
@@ -30,8 +29,7 @@
           "item_type": "str",
           "label": "启动目录",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/",
           "placeholder": "",
@@ -43,8 +41,7 @@
           "item_type": "str",
           "label": "启动命令",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "echo 'test'",
           "placeholder": "",
@@ -97,8 +94,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "drop-missing": {
     "project_name": "特征处理",
@@ -116,8 +112,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "drop-stablize": {
     "project_name": "特征处理",
@@ -135,8 +130,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "fill-missing": {
     "project_name": "特征处理",
@@ -154,8 +148,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "one-hot": {
     "project_name": "特征处理",
@@ -174,8 +167,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "calculate-metric": {
     "project_name": "特征处理",
@@ -193,8 +185,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "outlier-detection": {
     "project_name": "特征处理",
@@ -212,8 +203,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "pca": {
     "project_name": "特征处理",
@@ -232,8 +222,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/data-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "calculate-correlation": {
     "project_name": "特征处理",
@@ -251,8 +240,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "feature-combine": {
     "project_name": "特征处理",
@@ -270,8 +258,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-combine"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "feature-importance": {
     "project_name": "特征处理",
@@ -289,8 +276,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-importance"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "hadamard-multiply": {
     "project_name": "特征处理",
@@ -308,8 +294,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/hadamard-multiply"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "union-join-data": {
     "project_name": "特征处理",
@@ -327,8 +312,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/union-join-data"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "run-sql": {
     "project_name": "特征处理",
@@ -346,8 +330,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "sort": {
     "project_name": "特征处理",
@@ -365,8 +348,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "index-process": {
     "project_name": "特征处理",
@@ -384,8 +366,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "objective-process": {
     "project_name": "特征处理",
@@ -403,8 +384,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "data-tranform": {
     "project_name": "特征处理",
@@ -422,8 +402,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "data-split": {
     "project_name": "特征处理",
@@ -441,8 +420,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "dimension-reduction": {
     "project_name": "特征处理",
@@ -460,8 +438,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "sample": {
     "project_name": "特征处理",
@@ -479,8 +456,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "standardize-normalize": {
     "project_name": "特征处理",
@@ -498,8 +474,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "discretization": {
     "project_name": "特征处理",
@@ -517,42 +492,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/feature-process-all"
     },
-    "job_template_args": {
-    }
-  },
-  "datax": {
-    "project_name": "数据导入导出",
-    "image_name": "ccr.ccs.tencentyun.com/cube-studio/datax:20240501",
-    "gitpath": "/job-template/job/datax",
-    "image_describe": "datax异构数据源同步",
-    "job_template_name": "datax",
-    "job_template_describe": "datax异构数据源同步",
-    "job_template_command": "bash start.sh",
-    "job_template_volume": "",
-    "job_template_account": "",
-    "job_template_env": "",
-    "job_template_expand": {
-      "index": 1,
-      "rec_job_template": "自定义镜像",
-      "help_url": "/job-template/job/datax"
-    },
-    "job_template_args": {
-      "数据导入": {
-        "-f": {
-          "type": "str",
-          "item_type": "str",
-          "label": "job.json文件地址，<a target='_blank' href='https://github.com/alibaba/DataX?tab=readme-ov-file#support-data-channels'>书写格式参考</a>",
-          "require": 1,
-          "choice": [
-          ],
-          "range": "",
-          "default": "/mnt/{{creator}}/pipeline/example/ml/mysql-csv.json",
-          "placeholder": "",
-          "describe": "job.json文件地址，<a target='_blank' href='https://github.com/alibaba/DataX?tab=readme-ov-file#support-data-channels'>书写格式参考</a>",
-          "editable": 1
-        }
-      }
-    }
+    "job_template_args": {}
   },
   "dataset": {
     "project_name": "数据导入导出",
@@ -739,40 +679,6 @@
       }
     }
   },
-  "hadoop": {
-    "project_name": "数据处理工具",
-    "image_name": "python:3.9",
-    "gitpath": "/job-template/job/hadoop",
-    "image_describe": "hadoop大数据组件客户端",
-    "job_template_name": "hadoop",
-    "job_template_describe": "hadoop大数据组件，hdfs,hbase,sqoop,spark(企业版)",
-    "job_template_command": "bash start.sh",
-    "job_template_volume": "",
-    "job_template_account": "",
-    "job_template_expand": {
-      "index": 0,
-      "rec_job_template": "自定义镜像",
-      "help_url": "/job-template/job/hadoop",
-      "HostNetwork": true
-    },
-    "job_template_env": "FS_DEFAULTFS=hdfs://xx.xx.xx:9000\nYARN_RESOURCEMANAGER_ADDRESS=xx.xx.xx.xx:8032\nHIVE_METASTORE_URIS=thrift://xx.xx.xx.xx:9083",
-    "job_template_args": {
-      "hadoop任务": {
-        "--command": {
-          "type": "str",
-          "item_type": "str",
-          "label": "执行命令",
-          "require": 1,
-          "choice": [],
-          "range": "",
-          "default": "hdfs dfs -ls /",
-          "placeholder": "",
-          "describe": "执行命令。注意：由于大数据组件版本可能存在不一致的情况，这里可能需要基于原始模板构建跟内部大数据系统版本一致的hadoop模板",
-          "editable": 1
-        }
-      }
-    }
-  },
   "volcanojob": {
     "project_name": "数据处理工具",
     "image_name": "ccr.ccs.tencentyun.com/cube-studio/volcano:20250801",
@@ -796,8 +702,7 @@
           "item_type": "str",
           "label": "镜像",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "ccr.ccs.tencentyun.com/cube-studio/ubuntu-gpu:cuda11.8.0-cudnn8-python3.9",
           "placeholder": "",
@@ -809,8 +714,7 @@
           "item_type": "str",
           "label": "启动目录",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/volcano/",
           "placeholder": "",
@@ -822,8 +726,7 @@
           "item_type": "str",
           "label": "启动命令",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "python demo.py",
           "placeholder": "",
@@ -835,8 +738,7 @@
           "item_type": "str",
           "label": "机器个数",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "3",
           "placeholder": "",
@@ -951,8 +853,7 @@
           "item_type": "str",
           "label": "训练集地址",
           "require": 0,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/sklearn/ml-label.csv",
           "placeholder": "",
@@ -976,8 +877,7 @@
           "item_type": "str",
           "label": "label列",
           "require": 0,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "y",
           "placeholder": "",
@@ -1014,8 +914,7 @@
           "item_type": "str",
           "label": "模型参数",
           "require": 0,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": {
             "max_depth": 5,
@@ -1032,8 +931,7 @@
           "item_type": "str",
           "label": "模型地址",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/sklearn/model.joblib",
           "placeholder": "",
@@ -1047,8 +945,7 @@
           "item_type": "str",
           "label": "预测数据集地址",
           "require": 0,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/sklearn/ml-nolabel.csv",
           "placeholder": "",
@@ -1060,8 +957,7 @@
           "item_type": "str",
           "label": "保存地址",
           "require": 0,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/sklearn/result.csv",
           "placeholder": "",
@@ -1075,8 +971,7 @@
           "item_type": "str",
           "label": "worker数量",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "2",
           "placeholder": "",
@@ -1089,8 +984,7 @@
           "item_type": "str",
           "label": "初始化脚本",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "3",
           "default": "/mnt/{{creator}}/pipeline/example/sklearn/init.sh",
           "placeholder": "",
@@ -1116,8 +1010,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/adaboost"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "xgb": {
     "project_name": "机器学习算法",
@@ -1135,8 +1028,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/xgb"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "bayesian": {
     "project_name": "机器学习算法",
@@ -1154,8 +1046,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/bayesian"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "decision-tree": {
     "project_name": "机器学习算法",
@@ -1173,8 +1064,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/decision-tree"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "gbdt": {
     "project_name": "机器学习算法",
@@ -1192,8 +1082,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/gbdt"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "hyperparam-search-ray": {
     "project_name": "机器学习算法",
@@ -1211,8 +1100,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/hyperparameter-search-ray"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "hyperparam-search-nni": {
     "project_name": "机器学习算法",
@@ -1232,8 +1120,7 @@
       "help_url": "/job-template/job/hyperparameter-search-nni",
       "HostNetwork": true
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "kmean": {
     "project_name": "机器学习算法",
@@ -1251,8 +1138,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/kmean"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "knn": {
     "project_name": "机器学习算法",
@@ -1270,8 +1156,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/knn"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "lightgbm": {
     "project_name": "机器学习算法",
@@ -1289,8 +1174,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/lightgbm"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "lr": {
     "project_name": "机器学习算法",
@@ -1308,8 +1192,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/lr"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "random-forest": {
     "project_name": "机器学习算法",
@@ -1327,8 +1210,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/random-forest"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "random-forest-regression": {
     "project_name": "机器学习算法",
@@ -1346,8 +1228,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/rf-regression"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "arima": {
     "project_name": "机器学习算法",
@@ -1365,8 +1246,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/arima"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "ar": {
     "project_name": "机器学习算法",
@@ -1384,8 +1264,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/ar"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "tfjob": {
     "project_name": "深度学习",
@@ -1480,8 +1359,7 @@
           "item_type": "str",
           "label": "镜像",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "ccr.ccs.tencentyun.com/cube-studio/ubuntu-gpu:cuda11.8.0-cudnn8-python3.9",
           "placeholder": "",
@@ -1493,8 +1371,7 @@
           "item_type": "str",
           "label": "启动目录",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/pytorch",
           "placeholder": "",
@@ -1506,8 +1383,7 @@
           "item_type": "str",
           "label": "启动命令",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "bash start.sh",
           "placeholder": "启动命令，例如 python3 xxx.py",
@@ -1519,8 +1395,7 @@
           "item_type": "str",
           "label": "worker数量",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "3",
           "placeholder": "分布式训练worker的数目",
@@ -1547,8 +1422,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/paddle"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "mindspore": {
     "project_name": "深度学习",
@@ -1565,8 +1439,7 @@
       "index": 5,
       "help_url": "/job-template/job/mindspore"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "mxnet": {
     "project_name": "深度学习",
@@ -1584,8 +1457,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/mxnet"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "horovod": {
     "project_name": "分布式加速",
@@ -1603,8 +1475,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/horovod"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "megatron": {
     "project_name": "分布式加速",
@@ -1622,8 +1493,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/megatron"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "deepspeed": {
     "project_name": "分布式加速",
@@ -1641,8 +1511,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/deepspeed"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "colossalai": {
     "project_name": "分布式加速",
@@ -1660,8 +1529,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/colossalai"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "mpi": {
     "project_name": "分布式加速",
@@ -1679,8 +1547,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/mpi"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "model-evaluation": {
     "project_name": "模型处理",
@@ -1698,8 +1565,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/model_evaluation"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "model-convert": {
     "project_name": "模型处理",
@@ -1717,8 +1583,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/model_convert"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "opencompass": {
     "project_name": "模型处理",
@@ -1736,8 +1601,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/opencompass"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "model-quantization": {
     "project_name": "模型处理",
@@ -1755,8 +1619,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/model-quantization"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "model-distillation": {
     "project_name": "模型处理",
@@ -1774,8 +1637,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/model-distillation"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "model-prune": {
     "project_name": "模型处理",
@@ -1793,8 +1655,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/model-distillation"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "model-register": {
     "project_name": "模型服务化",
@@ -1949,8 +1810,7 @@
           "item_type": "str",
           "label": "镜像",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "ccr.ccs.tencentyun.com/cube-studio/ubuntu-gpu:cuda11.8.0-cudnn8-python3.9",
           "placeholder": "",
@@ -1962,8 +1822,7 @@
           "item_type": "str",
           "label": "启动目录",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/offline-inference/",
           "placeholder": "",
@@ -1975,8 +1834,7 @@
           "item_type": "str",
           "label": "启动命令",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "bash start.sh",
           "placeholder": "",
@@ -1988,8 +1846,7 @@
           "item_type": "str",
           "label": "worker数量",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "3",
           "placeholder": "",
@@ -2292,8 +2149,7 @@
           "item_type": "str",
           "label": "worker数量",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "3",
           "placeholder": "分布式任务的worker数目",
@@ -2320,8 +2176,7 @@
           "item_type": "str",
           "label": "配置文件地址",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/media/video_url.txt",
           "placeholder": "",
@@ -2353,8 +2208,7 @@
           "item_type": "str",
           "label": "worker数量",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "3",
           "placeholder": "",
@@ -2367,8 +2221,7 @@
           "item_type": "str",
           "label": "配置文件地址",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/media/video_image.txt",
           "placeholder": "配置文件地址，每行格式：<br>$local_video_path $des_img_dir $frame_rate",
@@ -2400,8 +2253,7 @@
           "item_type": "str",
           "label": "worker数量",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "3",
           "placeholder": "",
@@ -2414,8 +2266,7 @@
           "item_type": "str",
           "label": "配置文件地址",
           "require": 1,
-          "choice": [
-          ],
+          "choice": [],
           "range": "",
           "default": "/mnt/{{creator}}/pipeline/example/media/video_audio.txt",
           "placeholder": "",
@@ -2551,8 +2402,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/llama_factory"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "deepseek": {
     "project_name": "大模型",
@@ -2572,8 +2422,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/llama_factory"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "llama3": {
     "project_name": "大模型",
@@ -2591,8 +2440,7 @@
     "job_template_expand": {
       "index": 5
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "baichuan2": {
     "project_name": "大模型",
@@ -2612,8 +2460,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/baichuan2"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "qwen3": {
     "project_name": "大模型",
@@ -2633,8 +2480,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/llama_factory"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "llama-factory-sft": {
     "project_name": "大模型",
@@ -2642,7 +2488,9 @@
     "gitpath": "/job-template/job/llama-factory",
     "image_describe": "llama-factory",
     "job_template_name": "llama-factory-sft",
-    "job_template_old_names": ["llama-factory"],
+    "job_template_old_names": [
+      "llama-factory"
+    ],
     "job_template_describe": "llama-factory大模型sft微调(企业版)",
     "job_template_version": "Release",
     "job_template_workdir": "/app",
@@ -2656,8 +2504,7 @@
       "help_url": "/job-template/job/llama-factory",
       "enterprise": true
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "llama-factory-rm": {
     "project_name": "大模型",
@@ -2678,8 +2525,7 @@
       "help_url": "/job-template/job/llama-factory",
       "enterprise": true
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "llama-factory-ppo": {
     "project_name": "大模型",
@@ -2700,8 +2546,7 @@
       "help_url": "/job-template/job/llama-factory",
       "enterprise": true
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "paddleocr-vl": {
     "project_name": "文本处理",
@@ -2722,8 +2567,7 @@
       "help_url": "/job-template/job/paddleocr-vl",
       "enterprise": true
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "nlp-clean-data": {
     "project_name": "文本处理",
@@ -2743,8 +2587,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/nlp-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "nlp-filter-data": {
     "project_name": "文本处理",
@@ -2764,8 +2607,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/nlp-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "nlp-replace-private-data": {
     "project_name": "文本处理",
@@ -2785,8 +2627,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/nlp-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "nlp-analyze-data": {
     "project_name": "文本处理",
@@ -2807,8 +2648,7 @@
       "help_url": "/job-template/job/nlp-process",
       "enterprise": true
     },
-    "job_template_args":{
-    }
+    "job_template_args": {}
   },
   "question-generation": {
     "project_name": "文本处理",
@@ -2828,8 +2668,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/nlp-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "question-answer-generation": {
     "project_name": "文本处理",
@@ -2849,8 +2688,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/nlp-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "question-answer-extension": {
     "project_name": "文本处理",
@@ -2870,8 +2708,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/nlp-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-quality-assessment": {
     "project_name": "图像处理",
@@ -2891,8 +2728,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-blur": {
     "project_name": "图像处理",
@@ -2912,8 +2748,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-resize": {
     "project_name": "图像处理",
@@ -2933,8 +2768,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-normalize": {
     "project_name": "图像处理",
@@ -2954,8 +2788,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-cropping": {
     "project_name": "图像处理",
@@ -2975,8 +2808,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-equalize": {
     "project_name": "图像处理",
@@ -2996,8 +2828,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-cvtcolor": {
     "project_name": "图像处理",
@@ -3017,8 +2848,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "vision-image-augmentation": {
     "project_name": "图像处理",
@@ -3038,8 +2868,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/vision-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "audio-augment": {
     "project_name": "音频处理",
@@ -3057,8 +2886,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/voice-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "audio-clean": {
     "project_name": "音频处理",
@@ -3076,8 +2904,7 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/voice-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   },
   "audio-quality-assessment": {
     "project_name": "音频处理",
@@ -3095,7 +2922,6 @@
       "rec_job_template": "自定义镜像",
       "help_url": "/job-template/job/voice-process"
     },
-    "job_template_args": {
-    }
+    "job_template_args": {}
   }
 }

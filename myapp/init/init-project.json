@@ -44,7 +44,7 @@
   }, {
     "type": "job-template",
     "name": "数据处理工具",
-    "describe": "数据的单机或分布式处理任务,ray/spark/hadoop/volcanojob",
+    "describe": "数据的单机或分布式处理任务,ray/spark/volcanojob",
     "expand": {"index": 1}
   }, {
     "type": "job-template",
