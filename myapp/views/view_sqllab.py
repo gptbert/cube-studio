@@ -34,15 +34,14 @@ engine_impls = {
     'clickhouse': Base_Impl(),
     'postgres': Base_Impl(),
     "impala": Base_Impl(),
-    "hive": Base_Impl()
 }
+# 注：已移除 hive 引擎注册。数仓侧改走 Hadoop YARN + Spark 3.5；
+# 如需查询 Hive Metastore 上的表，可通过 presto/trino 的 hive catalog 接入。
 db_uri_demo = {
     'mysql': ['mysql+pymysql://$username:$password@$host:3306/$database'],
     'postgres': ['postgresql+psycopg2://$username:$password@$host:5432/$database'],
-    'presto': ['presto://$username:$password@$host:8080/$catalog/$schema'],   # presto://presto-coordinator-service.default:8080/hive/default
+    'presto': ['presto://$username:$password@$host:8080/$catalog/$schema'],
     'clickhouse': ['clickhouse+native://$username:$password@$host:9000/$database'],
-    # "hive":['hive://username:passwd@host:10000/default?auth=LDAP'],
-    "hive":['hive://$host:10000/default?auth=NOSASL'],
     "impala": ['impala://host:port/database'],
 }
 

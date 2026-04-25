@@ -1866,16 +1866,15 @@ def fix_task_position(pipeline, tasks, expand_tasks):
 
 
 
-def hive_create_sql_demo():
-    sql = '''create table if not exists test_table(
-    ftime int comment '分区时间',
-    event_time string comment '事件时间戳'
-    ) comment 'test'
-    PARTITION BY LIST( ftime )
-            (
-                PARTITION p_20210925 VALUES IN ( 20210925 ),
-                PARTITION default
-            );
+def create_sql_demo():
+    # Spark SQL / Iceberg 兼容的建表示例，供元数据登记表单作为示意
+    sql = '''CREATE TABLE IF NOT EXISTS test_table (
+    ftime       INT     COMMENT '分区时间',
+    event_time  STRING  COMMENT '事件时间戳'
+)
+COMMENT 'test'
+PARTITIONED BY (ftime)
+STORED AS PARQUET;
 '''
     return sql
 

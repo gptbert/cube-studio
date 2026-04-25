@@ -103,55 +103,6 @@ Metadata_column_fields = {
 }
 
 
-# @pysnooper.snoop()
-def ddl_hive_external_table(table_id):
-    try:
-        item = db.session.query(Dimension_table).filter_by(id=int(table_id)).first()
-        if not item:
-            return
-        cols = json.loads(item.columns)
-        # 创建hive外表
-        hive_type_map = {'INT': 'BIGINT', 'TEXT': 'STRING','STRING': 'STRING','DATE': 'STRING', 'DOUBLE': 'DOUBLE','ENUM':'STRING','JSON': "STRING"}
-        cols_lst = []
-        for col_name in cols:
-            if col_name in ['id', ]:
-                continue
-            column_type = cols[col_name].get('column_type', 'text').upper()
-            if column_type not in hive_type_map:
-                raise RuntimeError(__("更新了不支持的新字段类型"))
-            column_type = hive_type_map[column_type]
-            col_str = col_name + ' ' + column_type
-            cols_lst.append(col_str)
-
-        columns_sql = ',\n'.join(cols_lst).strip(',')
-        import sqlalchemy.engine.url as url
-        uri = url.make_url(item.sqllchemy_uri if item.sqllchemy_uri else default_uri)
-        hive_sql = ''' 
-# use your hive db;
-CREATE EXTERNAL TABLE IF NOT EXISTS {table_name}  (
-id BIGINT,
-{columns_sql}
-) 
-with (ip='{ip}',port='{port}',db_name='{pg_db_name}',user_name='{user_name}',pwd='{password}',table_name='{pg_table_name}',charset='utf8',db_type='pg');
-
-                        '''.format(
-            table_name=item.table_name,
-            columns_sql=columns_sql,
-            ip=uri.host,
-            port=str(uri.port),
-            user_name=uri.username,
-            password=uri.password,
-            pg_db_name=uri.database,
-            pg_table_name=item.table_name
-        )
-        # 执行创建数据库的sql
-        logging.info(hive_sql)
-        return hive_sql
-    except Exception as e:
-        traceback.print_exc()
-        return str(e)
-
-
 default_uri = 'mysql+pymysql://your_username:your_password@your_host:port/your_db'
 
 
@@ -344,12 +295,6 @@ class Dimension_table_ModelView_Api(MyappModelRestApi):
         results = pandas.read_sql_query(sql, sql_engine)
         return results.to_dict()
 
-    @expose_api(description="创建hive外表",url="/external/<dim_id>", methods=["GET"])
-    def external(self, dim_id):
-        ddl_sql = ddl_hive_external_table(dim_id)
-        print(ddl_sql)
-        return Markup(ddl_sql.replace('\n', '<br>'))
-
     # @expose_api(description="清空",url="/clear/<dim_id>", methods=["GET"])
     @action("clear", "清空", "清空选中维表的所有远程数据?", "fa-trash", single=True, multiple=False)
     def delete_all(self, items):
@@ -374,7 +319,7 @@ class Dimension_table_ModelView_Api(MyappModelRestApi):
         url_path = conf.get('MODEL_URLS', {}).get("dimension") + f'?targetId={dim_id}'
         return redirect(url_path)
 
-    @expose_api(description="创建hive外表",url="/create_external_table/<dim_id>", methods=["GET"])
+    @expose_api(description="创建/同步关系型外表（MySQL/Postgres）",url="/create_external_table/<dim_id>", methods=["GET"])
     # @pysnooper.snoop()
     def create_external_table(self, dim_id):
         item = db.session.query(Dimension_table).filter_by(id=int(dim_id)).first()

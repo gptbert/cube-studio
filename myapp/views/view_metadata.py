@@ -194,7 +194,7 @@ class Metadata_table_ModelView_base():
         "sql_demo": StringField(
             _('sql 示例'),
             description= _('建表sql 示例'),
-            widget=MyCodeArea(code=core.hive_create_sql_demo()),  # 传给widget函数的是外层的field对象，以及widget函数的参数
+            widget=MyCodeArea(code=core.create_sql_demo()),  # 传给widget函数的是外层的field对象，以及widget函数的参数
         ),
         "create_table_ddl": StringField(
             label= _('建表sql'),
