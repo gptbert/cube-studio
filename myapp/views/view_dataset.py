@@ -317,19 +317,10 @@ example：
     check_delete_permission = check_edit_permission
 
     # 将外部存储保存到本地存储中心
-    @action("save_store", "备份", "备份数据到当前集群?", "fa-trash", single=True, multiple=False)
-    # @pysnooper.snoop()
-    def save_store(self, dataset):
-        if not self.check_edit_permission(dataset):
-            flash('no permission','warning')
-            return
-        from myapp.tasks.async_task import update_dataset
-        kwargs = {
-            "dataset_id": dataset.id,
-        }
-        update_dataset.apply_async(kwargs=kwargs)
-        # update_dataset(task=None,dataset_id=item.id)
-
+    # NOTE: 原 @action("save_store") "备份数据到当前集群" 已移除：
+    # 数据集表只做"训练数据引用"（PVC 路径 / 远端 URL 元数据登记），
+    # 数据搬运 / 备份由 DolphinScheduler + HDFS 体系承担，cube-studio 不再
+    # 把外部数据复制到本地存储。
 
     # 将外部存储保存到本地存储中心
     @expose_api(description="下载指定数据集",url="/download/<dataset_id>", methods=["GET", "POST"])

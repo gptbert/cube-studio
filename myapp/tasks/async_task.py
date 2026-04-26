@@ -284,54 +284,9 @@ def upgrade_service(task,service_id,name,namespace):
             push_admin(__('部署升级报错 %s %s: %s') % (service.model_name, service.model_version,str(e)))
 
 
-@celery_app.task(name="task.update_dataset", bind=True)  # , soft_time_limit=15
-# @pysnooper.snoop()
-def update_dataset(task,dataset_id):
-    logging.info('============= begin run update_dataset task')
-    with session_scope(nullpool=True) as dbsession:
-        try:
-            dataset = dbsession.query(Dataset).filter_by(id=dataset_id).first()
-
-            remote_dir = f'dataset/{dataset.name}/{dataset.version if dataset.version else "latest"}/'
-            remote_dir = os.path.join('/data/k8s/kubeflow/global/', remote_dir)
-            if os.path.exists(remote_dir):
-                # 先清理干净，因为有可能存在旧的不对的数据
-                shutil.rmtree(remote_dir, ignore_errors=True)
-            os.makedirs(remote_dir, exist_ok=True)
-
-            # 备份在本地
-            if dataset.path:
-                paths = dataset.path.split("\n")
-                for path in paths:
-                    file_name = path[path.rindex("/") + 1:]
-                    local_path = os.path.join('/home/myapp/myapp/static/', path.lstrip('/'))
-                    if os.path.exists(local_path):
-                        # 对文件直接复制
-                        if os.path.isfile(local_path):
-                            shutil.copy(local_path,remote_dir)
-                        # 对文件夹要拷贝文件夹
-                        if os.path.isdir(local_path):
-                            shutil.copytree(local_path,remote_dir)
-
-            elif dataset.download_url:
-                download_urls = dataset.download_url.split("\n")
-                for download_url in download_urls:
-                    try:
-                        import requests
-                        filename = download_url.split("/")[-1]
-                        try_num=0
-                        while try_num<3:
-                            try_num+=1
-                            response = requests.get(download_url)
-                            with open(remote_dir + '/' + filename, 'wb') as f:
-                                f.write(response.content)
-                                break
-                    except Exception as e:
-                        print(e)
-
-        except Exception as e:
-            logging.error(e)
-            push_admin(f'数据集备份失败，id:{dataset_id}')
+# NOTE: 原 task.update_dataset celery 任务（把外部数据复制 / 下载到本地集群
+# 存储）已移除。Cube Studio 的 Dataset 表只做"训练数据引用"，
+# 数据搬运 / 备份由 DolphinScheduler + HDFS 体系承担。
 
 
 

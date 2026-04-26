@@ -73,7 +73,11 @@ class Service_ModelView_base():
 
     base_order = ('id', 'desc')
     order_columns = ['id']
-    label_title = _('云原生服务')
+    label_title = _('模型 sidecar 服务')
+    # NOTE: 用于部署 ML / LLM 推理配套 sidecar，例如 vLLM / Triton 自定义版本、
+    # SD-WebUI、xinference、TensorBoard-server 等。
+    # 不用于部署数据库管理工具（phpmyadmin / pgadmin / mongo-express 等）或
+    # 日志栈（kibana / grafana），这些由企业 OPS 统一维护。
     base_filters = [["id", Service_Filter, lambda: []]]
     add_form_query_rel_fields = {
         "project": [["name", Project_Join_Filter, 'org']]
