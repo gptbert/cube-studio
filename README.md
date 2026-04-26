@@ -13,7 +13,7 @@ https://github.com/data-infra/cube-studio/wiki
 
 ## 部署（基础设施外部化）
 
-Cube Studio 已收敛为 **MLOps 控制面**：MySQL、PostgreSQL、Redis、Prometheus、Grafana、Harbor、HDFS、ES、Kafka 等基础设施由企业统一维护，仓库内不再附带其部署清单。
+Cube Studio 已收敛为 **MLOps 控制面**：MySQL、PostgreSQL、Redis、Prometheus、Grafana、Harbor、HDFS、ES、Kafka、Rancher（K8s 控制面）、LiteLLM（LLM 网关）等基础设施由企业统一维护，仓库内不再附带其部署清单。
 
 - 部署入口：`install/kubernetes/start.sh`
 - 外部服务配置示例：`install/kubernetes/external-services.example.yaml`
