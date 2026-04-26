@@ -341,6 +341,80 @@ triton-server：框架:地址。onnx:模型文件地址model.onnx，pytorch:torc
             'diff': payload,
         })
 
+    # ---- Phase 4.2 实验追踪写入侧：供训练任务 SDK 调用 ----
+    @expose_api(description="创建一条 run（status=running），返回 run_id 与 model id",
+                url="/run", methods=["POST"])
+    def start_run_api(self):
+        from myapp.services import training_model_service
+        body = request.get_json(silent=True) or {}
+        required = ('name', 'version', 'project_id')
+        missing = [k for k in required if not body.get(k)]
+        if missing:
+            return jsonify({'error': 'missing fields', 'fields': missing}), 400
+        try:
+            project_id = int(body['project_id'])
+        except (TypeError, ValueError):
+            return jsonify({'error': 'project_id must be int'}), 400
+        row = training_model_service.start_run(
+            name=body['name'],
+            version=body['version'],
+            project_id=project_id,
+            run_id=body.get('run_id') or None,
+            experiment_id=body.get('experiment_id', ''),
+            parent_run_id=body.get('parent_run_id', ''),
+            framework=body.get('framework', ''),
+            describe=body.get('describe', ''),
+            path=body.get('path', ''),
+            api_type=body.get('api_type', ''),
+            pipeline_id=int(body.get('pipeline_id', 0) or 0),
+        )
+        return jsonify({'id': row.id, 'run_id': row.run_id, 'status': row.status})
+
+    @expose_api(description="向指定 run 写入 metric / param / artifact",
+                url="/run/<string:run_id>/log", methods=["POST"])
+    def log_run_api(self, run_id):
+        from myapp.services import training_model_service
+        body = request.get_json(silent=True) or {}
+        log_type = (body.get('type') or '').strip()
+        if log_type == 'metric':
+            row = training_model_service.log_metric(run_id, body.get('key', ''), body.get('value', 0.0))
+        elif log_type == 'param':
+            row = training_model_service.log_param(run_id, body.get('key', ''), body.get('value'))
+        elif log_type == 'artifact':
+            row = training_model_service.log_artifact(run_id, body.get('path', ''))
+        else:
+            return jsonify({'error': "type must be one of: 'metric', 'param', 'artifact'"}), 400
+        if row is None:
+            return jsonify({'error': 'run not found', 'run_id': run_id}), 404
+        return jsonify({
+            'run_id': run_id,
+            'type': log_type,
+            'metrics': training_model_service.parse_metrics(row.metrics),
+            'params': training_model_service.parse_params(row.params),
+            'artifacts': training_model_service.parse_artifacts(row.artifacts),
+        })
+
+    @expose_api(description="标记 run 结束，可选回填 log_url / path / md5",
+                url="/run/<string:run_id>/finish", methods=["POST"])
+    def finish_run_api(self, run_id):
+        from myapp.services import training_model_service
+        body = request.get_json(silent=True) or {}
+        row = training_model_service.finish_run(
+            run_id,
+            status=body.get('status', 'success'),
+            log_url=body.get('log_url'),
+            path=body.get('path'),
+            md5=body.get('md5'),
+        )
+        if row is None:
+            return jsonify({'error': 'run not found', 'run_id': run_id}), 404
+        return jsonify({
+            'run_id': run_id,
+            'status': row.status,
+            'log_url': row.log_url,
+            'path': row.path,
+        })
+
     # 划分数据历史版本
     def pre_list_res(self,res):
         data=res['data']
