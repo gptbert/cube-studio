@@ -1,139 +1,87 @@
 #!/bin/bash
+set -euo pipefail
 
 if [ $# -eq 0 ]; then
   echo "错误：请提供 内网ip地址 作为参数"
+  echo "用法: bash start.sh <INGRESS_IP>"
   exit 1
 fi
+
+INGRESS_IP="$1"
+
 bash init_node.sh
 mkdir -p ~/.kube && rm -rf ~/.kube/config && cp config ~/.kube/config
 mkdir -p kubeconfig && echo "" > kubeconfig/dev-kubeconfig
 
 ARCH=$(uname -m)
-
 if [ "$ARCH" = "x86_64" ]; then
-  wget -O kubectl https://cube-studio.oss-cn-hangzhou.aliyuncs.com/install/kubectl-amd64-1.28 && chmod +x kubectl  && cp kubectl /usr/bin/ && mv kubectl /usr/local/bin/
+  wget -O kubectl https://cube-studio.oss-cn-hangzhou.aliyuncs.com/install/kubectl-amd64-1.28
+  chmod +x kubectl && cp kubectl /usr/bin/ && mv kubectl /usr/local/bin/
 elif [ "$ARCH" = "aarch64" ]; then
-  wget -O kubectl https://cube-studio.oss-cn-hangzhou.aliyuncs.com/install/kubectl-arm64-1.28 && chmod +x kubectl  && cp kubectl /usr/bin/ && mv kubectl /usr/local/bin/
+  wget -O kubectl https://cube-studio.oss-cn-hangzhou.aliyuncs.com/install/kubectl-arm64-1.28
+  chmod +x kubectl && cp kubectl /usr/bin/ && mv kubectl /usr/local/bin/
 fi
 
-version=`kubectl version --short | awk '/Server Version:/ {print $3}'`
-echo "kubernets versison" $version
+version=$(kubectl version --short | awk '/Server Version:/ {print $3}')
+echo "kubernetes version" "$version"
 
-node=`kubectl  get node -o wide |grep $1 |awk '{print $1}'| head -n 1`
+node=$(kubectl get node -o wide | grep "$INGRESS_IP" | awk '{print $1}' | head -n 1)
+if [ -z "$node" ]; then
+  echo "错误：未找到包含IP $INGRESS_IP 的节点"
+  exit 1
+fi
 
-kubectl label node $node train=true cpu=true notebook=true service=true org=public istio=true kubeflow=true kubeflow-dashboard=true mysql=true redis=true monitoring=true logging=true --overwrite
+# 仅保留 MLOps 控制面与任务编排能力（基础设施统一外部维护）
+kubectl label node "$node" train=true cpu=true notebook=true service=true org=public istio=true kubeflow=true kubeflow-dashboard=true --overwrite
 
-# kubectl label nodes --all train=true cpu=true notebook=true service=true org=public istio=true kubeflow=true kubeflow-dashboard=true mysql=true redis=true monitoring=true logging=true --overwrite
+# Cube Studio 控制面安装入口
+# 前置依赖：MySQL/PG、Redis、Prometheus/Grafana、Harbor、HDFS 等基础设施
+# 已由企业统一维护，不再随仓库内置部署。请先用
+#   external-services.example.yaml
+# 准备 Secret/ConfigMap 注入连接信息，再执行本脚本。
 
-# 创建命名空间
+# 创建命名空间和基础 RBAC
 sh create_ns_secret.sh
 kubectl apply -f sa-rbac.yaml
-# 部署dashboard
-#kubectl apply -f dashboard/v2.2.0-cluster.yaml
-# 高版本k8s部署2.6.1版本
-# kubectl delete -f dashboard/v2.6.1-cluster.yaml
-# kubectl delete -f dashboard/v2.6.1-user.yaml
+
+# k8s dashboard
 kubectl apply -f dashboard/v2.6.1-cluster.yaml
 kubectl apply -f dashboard/v2.6.1-user.yaml
-# 部署mysql
-kubectl create -f mysql/pv-pvc-hostpath.yaml
-kubectl create -f mysql/service.yaml
-kubectl create -f mysql/configmap-mysql.yaml
-kubectl create -f mysql/deploy.yaml
-# 部署redis
-kubectl delete -f redis/redis.yaml
-kubectl create -f redis/redis.yaml
 
-# 部署prometheus
-cd prometheus
-kubectl delete -f ./operator/operator-crd.yml
-sleep 5
-kubectl apply -f ./operator/operator-crd.yml
-kubectl apply -f ./operator/operator-rbac.yml
-kubectl wait crd/podmonitors.monitoring.coreos.com --for condition=established --timeout=60s
-kubectl apply -f ./operator/operator-dp.yml
-kubectl apply -f ./node-exporter/node-exporter-sa.yml
-kubectl apply -f ./node-exporter/node-exporter-rbac.yml
-kubectl apply -f ./node-exporter/node-exporter-svc.yml
-kubectl apply -f ./node-exporter/node-exporter-ds.yml
-kubectl apply -f ./node-exporter/node-exporter-sm.yml
-
-kubectl apply -f ./grafana/pv-pvc-hostpath.yml
-kubectl apply -f ./grafana/grafana-sa.yml
-kubectl apply -f ./grafana/grafana-source.yml
-kubectl apply -f ./grafana/grafana-datasources.yml
-kubectl apply -f ./grafana/grafana-admin-secret.yml
-kubectl apply -f ./grafana/grafana-svc.yml
-kubectl delete configmap grafana-config all-grafana-dashboards --namespace=monitoring
-kubectl create configmap grafana-config --from-file=./grafana/grafana.ini --namespace=monitoring
-kubectl create configmap all-grafana-dashboards --from-file=./grafana/dashboard --namespace=monitoring
-kubectl delete -f ./grafana/grafana-dp.yml
-sleep 5
-kubectl apply -f ./grafana/grafana-dp.yml
-kubectl apply -f ./service-discovery/kube-controller-manager-svc.yml
-kubectl apply -f ./service-discovery/kube-scheduler-svc.yml
-kubectl apply -f ./prometheus/prometheus-secret.yml
-kubectl apply -f ./prometheus/prometheus-rules.yml
-kubectl apply -f ./prometheus/prometheus-rbac.yml
-kubectl apply -f ./prometheus/prometheus-svc.yml
-kubectl wait crd/prometheuses.monitoring.coreos.com --for condition=established --timeout=60s
-kubectl delete -f ./prometheus/prometheus-main.yml
-sleep 5
-kubectl apply -f ./prometheus/pv-pvc-hostpath.yaml
-kubectl apply -f ./prometheus/prometheus-main.yml
-sleep 5
-# 部署sm
-kubectl apply -f ./servicemonitor/coredns-sm.yml
-kubectl apply -f ./servicemonitor/kube-apiserver-sm.yml
-kubectl apply -f ./servicemonitor/kube-controller-manager-sm.yml
-kubectl apply -f ./servicemonitor/kube-scheduler-sm.yml
-kubectl apply -f ./servicemonitor/kubelet-sm.yml
-kubectl apply -f ./servicemonitor/kubestate-metrics-sm.yml
-kubectl apply -f ./servicemonitor/prometheus-operator-sm.yml
-kubectl apply -f ./servicemonitor/prometheus-sm.yml
-cd ../
-
-
-# 部署gpu的监控
+# GPU 能力
 kubectl apply -f gpu/nvidia-device-plugin.yml
 kubectl apply -f gpu/dcgm-exporter.yaml
 
-# 部署volcano
-kubectl delete -f volcano/volcano-development.yaml
+# Volcano
+kubectl delete -f volcano/volcano-development.yaml || true
 kubectl apply -f volcano/volcano-development.yaml
 kubectl wait crd/jobs.batch.volcano.sh --for condition=established --timeout=60s
 
-# 部署istio
-kubectl delete -f istio/install-1.15.0.yaml
+# Istio
+kubectl delete -f istio/install-1.15.0.yaml || true
 kubectl apply -f istio/install-crd.yaml
 kubectl wait crd/envoyfilters.networking.istio.io --for condition=established --timeout=60s
 kubectl apply -f istio/install-1.15.0.yaml
-
 kubectl wait crd/virtualservices.networking.istio.io --for condition=established --timeout=60s
 kubectl wait crd/gateways.networking.istio.io --for condition=established --timeout=60s
-
 kubectl apply -f gateway.yaml
 kubectl apply -f virtual.yaml
 
-# 部署argo
+# Argo / Pipeline（可按需保留 MinIO）
 kubectl apply -f argo/minio-pv-pvc-hostpath.yaml
 kubectl apply -f argo/pipeline-runner-rolebinding.yaml
 kubectl apply -f argo/install-3.4.3-all.yaml
 
-# 部署trainjob:tfjob/pytorchjob/mpijob/mxnetjob/xgboostjobs/paddlepaddle
+# Train operator
 kubectl apply -f kubeflow/sa-rbac.yaml
-
 kubectl apply -k kubeflow/train-operator/manifests/overlays/standalone
 
-
-# 部署管理平台
-kubectl delete configmap kubernetes-config -n infra
+# 管理平台（依赖外部 MySQL/PG、Redis、可选 ES/Kafka/Prometheus）
+kubectl delete configmap kubernetes-config -n infra || true
 kubectl create configmap kubernetes-config --from-file=kubeconfig -n infra
-
-kubectl delete configmap kubernetes-config -n pipeline
+kubectl delete configmap kubernetes-config -n pipeline || true
 kubectl create configmap kubernetes-config --from-file=kubeconfig -n pipeline
-
-kubectl delete configmap kubernetes-config -n automl
+kubectl delete configmap kubernetes-config -n automl || true
 kubectl create configmap kubernetes-config --from-file=kubeconfig -n automl
 
 kubectl create -f pv-pvc-infra.yaml
@@ -143,19 +91,12 @@ kubectl create -f pv-pvc-pipeline.yaml
 kubectl create -f pv-pvc-service.yaml
 
 # 替换配置文件config.py中的内网ip地址
-sed -i "s/SERVICE_EXTERNAL_IP=\\[\\]/SERVICE_EXTERNAL_IP=\[\"$1\"\]/g" cube/overlays/config/config.py
+sed -i "s/SERVICE_EXTERNAL_IP=\\[\\]/SERVICE_EXTERNAL_IP=\[\"$INGRESS_IP\"\]/g" cube/overlays/config/config.py
 
-kubectl delete -k cube/overlays
+kubectl delete -k cube/overlays || true
 kubectl apply -k cube/overlays
 
 # 配置入口
-kubectl patch svc istio-ingressgateway -n istio-system -p '{"spec":{"externalIPs":["'"$1"'"]}}'
-echo "打开网址：http://$1"
-
-# ipvs模式启动配置入口
-# kubectl patch svc istio-ingressgateway -n istio-system -p '{"spec":{"type":"NodePort"}}'
-# nodeport=`kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}'`
-# echo "打开网址：http://$1:$nodeport"
-
-
-
+kubectl patch svc istio-ingressgateway -n istio-system -p '{"spec":{"externalIPs":["'"$INGRESS_IP"'"]}}'
+echo "Cube Studio 控制面部署完成，打开网址：http://$INGRESS_IP"
+echo "请确认已通过 Secret/ConfigMap 注入外部 MySQL/PostgreSQL、Redis 连接信息。"

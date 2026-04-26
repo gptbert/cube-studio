@@ -45,11 +45,11 @@ cd offline
 chmod +x kubectl  && cp kubectl /usr/bin/ && cp kubectl /usr/local/bin/
 ```
 
-2、[安装内网镜像仓库](harbor/readme.md)
+2、内网镜像仓库
 
-参考install/kubernetes/harbor/readme.md
-
-并创建cube-studio和rancher项目，分别存放rancher的基础镜像和cube-studio的基础镜像
+> 注：仓库内置的 `harbor/` 部署清单已移除（Harbor 由企业基础设施统一维护）。
+> 离线安装时请使用企业的 Harbor 实例，并创建 cube-studio 与 rancher 项目，
+> 分别存放 rancher 的基础镜像与 cube-studio 的基础镜像。
 
 配置每台机器docker添加这个 insecure-registries内网的私有镜像仓，如果是https可以忽略
 

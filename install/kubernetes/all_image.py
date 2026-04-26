@@ -1,9 +1,10 @@
 import json
 import os,re
 # 所需要的所有镜像
+# 注：MySQL / Redis / Prometheus / Grafana / Harbor / ES / Kafka 由企业基础设施
+# 统一维护，对应 install/kubernetes/{mysql,redis,prometheus,harbor,efk,kafka,...}
+# 内置部署目录已删除，本镜像清单也不再列出。
 kubeflow = [
-    'mysql:8.0.32',  # 数据库
-    'ccr.ccs.tencentyun.com/cube-studio/redis:7.4',  # 缓存
     "busybox:1.36.0",
     "kubeflow/training-operator:v1-8a066f9",  # 分布式训练
     'alpine:3.10',
@@ -18,19 +19,6 @@ kubernetes_dashboard = [
 new_gpu = [
     'nvidia/k8s-device-plugin:v0.11.0-ubuntu20.04',  # gpu k8s插件
     'nvidia/dcgm-exporter:3.1.7-3.1.4-ubuntu20.04',  # gpu监控
-]
-
-new_prometheus = [
-    "prom/prometheus:v2.27.1",  # peomethues数据库
-    'prom/node-exporter:v1.5.0',  # 机器指标
-
-    'quay.io/prometheus-operator/prometheus-config-reloader:v0.46.0',  # prometheus配置翻译
-    "quay.io/prometheus-operator/prometheus-operator:v0.46.0",  # prometheus 部署工具
-    'ccr.ccs.tencentyun.com/cube-studio/kube-rbac-proxy:0.14.1',  # 指标
-    'carlosedp/addon-resizer:v1.8.4',  # 指标
-
-    'grafana/grafana:9.5.20',  # 监控看板
-    "ccr.ccs.tencentyun.com/cube-studio/prometheus-adapter:v0.9.1",  # peometheus指标翻译为自定义指标
 ]
 
 istio = [
@@ -133,9 +121,9 @@ for file in os.listdir('../../myapp/init/'):
         if match not in example_images:
             example_images.append(match.strip())
 
-images = kubeflow + kubernetes_dashboard + new_gpu + new_prometheus + istio + volcano + pipeline + cube_studio + user_image + job_template_images + example_images
+images = kubeflow + kubernetes_dashboard + new_gpu + istio + volcano + pipeline + cube_studio + user_image + job_template_images + example_images
 images = list(set(images))
-init_images = kubeflow + kubernetes_dashboard + new_gpu + new_prometheus + istio + volcano + pipeline
+init_images = kubeflow + kubernetes_dashboard + new_gpu + istio + volcano + pipeline
 
 
 
