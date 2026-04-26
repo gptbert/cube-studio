@@ -52,13 +52,8 @@ cube_studio = [
     'ccr.ccs.tencentyun.com/cube-studio/notebook:jupyter-ubuntu-deeplearning',
     # 超参搜索的镜像
     'ccr.ccs.tencentyun.com/cube-studio/nni:20240501',
-    # 内部服务镜像
-    "phpmyadmin:5.2.1",
-    # "ccr.ccs.tencentyun.com/cube-studio/patrikx3:latest",
-    # "mongo-express:0.54.0",
-    # "ccr.ccs.tencentyun.com/cube-studio/neo4j:4.4",
-    # "dpage/pgadmin4",
-    # "elasticsearch:7.12.1"
+    # 注：mysql / pgadmin / redis-ui / mongo-express / neo4j / es 等
+    # 数据库 UI sidecar 镜像已随 init-service.json 中对应模板移除。
     # 推理服务的镜像
 
     # 'ccr.ccs.tencentyun.com/cube-studio/tfserving:2.14.1-gpu',
