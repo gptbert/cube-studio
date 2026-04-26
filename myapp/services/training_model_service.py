@@ -220,6 +220,148 @@ def diff_two_runs_by_id(
 
 
 # ---------------------------------------------------------------------------
+# 写入侧（Phase 4.2）：训练任务向 Training_Model 写入实验上下文
+# ---------------------------------------------------------------------------
+
+
+def start_run(
+    *,
+    name: str,
+    version: str,
+    project_id: int,
+    run_id: Optional[str] = None,
+    experiment_id: str = '',
+    parent_run_id: str = '',
+    framework: str = '',
+    describe: str = '',
+    path: str = '',
+    api_type: str = '',
+    pipeline_id: int = 0,
+    dbsession=None,
+) -> Training_Model:
+    """创建一条 run（Training_Model 行），状态 running。
+
+    用于训练任务起点：先 INSERT 一行占位，后续通过 log_* / finish_run 滚动更新。
+    run_id 缺省自动生成 32 hex 字符；返回创建好的 ORM 对象，调用方可拿到 id 与 run_id。
+    """
+    import uuid
+    import datetime as _dt
+
+    session = dbsession if dbsession is not None else db.session
+    row = Training_Model(
+        name=name,
+        version=version,
+        project_id=project_id,
+        pipeline_id=pipeline_id,
+        run_id=run_id or uuid.uuid4().hex,
+        run_time=_dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        framework=framework,
+        describe=describe,
+        path=path,
+        api_type=api_type,
+        experiment_id=experiment_id,
+        parent_run_id=parent_run_id,
+        status='running',
+        metrics='{}',
+        params='{}',
+        artifacts='[]',
+    )
+    session.add(row)
+    session.commit()
+    return row
+
+
+def _merge_json_dict(raw: Optional[str], key: str, value: Any) -> str:
+    """合并 (key, value) 到 JSON dict 字符串；脏数据 / 空 → 视作空 dict 起步。"""
+    try:
+        parsed = json.loads(raw) if raw else {}
+    except (TypeError, ValueError):
+        parsed = {}
+    if not isinstance(parsed, dict):
+        parsed = {}
+    parsed[str(key)] = value
+    return json.dumps(parsed, ensure_ascii=False)
+
+
+def _append_json_list(raw: Optional[str], value: Any, *, dedup: bool = True) -> str:
+    """追加 value 到 JSON list 字符串；脏数据 / 空 → 视作空 list 起步。"""
+    try:
+        parsed = json.loads(raw) if raw else []
+    except (TypeError, ValueError):
+        parsed = []
+    if not isinstance(parsed, list):
+        parsed = []
+    if dedup and value in parsed:
+        return json.dumps(parsed, ensure_ascii=False)
+    parsed.append(value)
+    return json.dumps(parsed, ensure_ascii=False)
+
+
+def log_metric(run_id: str, key: str, value: float, *, dbsession=None) -> Optional[Training_Model]:
+    """把 (key, value) 合并写入指定 run 的 metrics JSON。run 不存在返回 None。"""
+    session = dbsession if dbsession is not None else db.session
+    row = get_run(run_id, dbsession=session)
+    if row is None:
+        return None
+    row.metrics = _merge_json_dict(row.metrics, key, _to_float(value))
+    session.commit()
+    return row
+
+
+def log_param(run_id: str, key: str, value: Any, *, dbsession=None) -> Optional[Training_Model]:
+    """把 (key, value) 合并写入指定 run 的 params JSON。run 不存在返回 None。"""
+    session = dbsession if dbsession is not None else db.session
+    row = get_run(run_id, dbsession=session)
+    if row is None:
+        return None
+    row.params = _merge_json_dict(row.params, key, value)
+    session.commit()
+    return row
+
+
+def log_artifact(run_id: str, path: str, *, dbsession=None) -> Optional[Training_Model]:
+    """把 path 追加到指定 run 的 artifacts JSON list（去重）。run 不存在返回 None。"""
+    session = dbsession if dbsession is not None else db.session
+    row = get_run(run_id, dbsession=session)
+    if row is None:
+        return None
+    row.artifacts = _append_json_list(row.artifacts, str(path), dedup=True)
+    session.commit()
+    return row
+
+
+_VALID_STATUSES = {'pending', 'running', 'success', 'failed', 'aborted'}
+
+
+def finish_run(
+    run_id: str,
+    *,
+    status: str = 'success',
+    log_url: Optional[str] = None,
+    path: Optional[str] = None,
+    md5: Optional[str] = None,
+    dbsession=None,
+) -> Optional[Training_Model]:
+    """标记 run 结束，可选回填 log_url / path / md5。
+
+    status 不在白名单时回退 success（避免脏字符串污染）。run 不存在返回 None。
+    """
+    session = dbsession if dbsession is not None else db.session
+    row = get_run(run_id, dbsession=session)
+    if row is None:
+        return None
+    row.status = status if status in _VALID_STATUSES else 'success'
+    if log_url is not None:
+        row.log_url = log_url
+    if path is not None:
+        row.path = path
+    if md5 is not None:
+        row.md5 = md5
+    session.commit()
+    return row
+
+
+# ---------------------------------------------------------------------------
 # 内部工具
 # ---------------------------------------------------------------------------
 

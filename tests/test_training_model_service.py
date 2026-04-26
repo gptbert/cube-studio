@@ -69,10 +69,18 @@ def _install_stubs() -> None:
                 return hash(self.name)
 
         class _StubTrainingModel:
+            # 类属性：用于 query.filter(Training_Model.xxx == ...) 这类调用
             experiment_id = _StubColumn('experiment_id')
             project_id = _StubColumn('project_id')
             run_id = _StubColumn('run_id')
             changed_on = _StubColumn('changed_on')
+
+            def __init__(self, **kwargs):
+                # 允许 start_run() 内部 Training_Model(name=..., version=..., ...) 实例化
+                # 再赋值字段；shadow class-level _StubColumn 以便后续读写
+                for k, v in kwargs.items():
+                    object.__setattr__(self, k, v)
+                self.id = None  # 模拟自增主键（commit 后由 _FakeSession 赋值）
 
         model_train_module.Training_Model = _StubTrainingModel
         sys.modules['myapp.models.model_train_model'] = model_train_module
@@ -226,13 +234,33 @@ class _FakeQuery:
 
 
 class _FakeSession:
-    def __init__(self, rows: Iterable[Any]):
-        self._rows = list(rows)
+    """轻量 SQLAlchemy-like session：支持 query / add / commit。
+
+    add 把新 row 放进 _rows，commit 给最新无 id 的 row 分配自增 id；
+    query 返回的 _FakeQuery 直接对当前 _rows 做线性过滤（仅 run_id 等值）。
+    """
+
+    def __init__(self, rows: Iterable[Any] = ()):
+        self._rows: List[Any] = list(rows)
+        self._next_id = (max([getattr(r, 'id', 0) or 0 for r in self._rows], default=0) or 0) + 1
         self.last_query: _FakeQuery | None = None
+        self.commits = 0
 
     def query(self, _model):
+        # 默认返回全量 rows；测试可在 _FakeQuery 上叠 filter/order_by/limit
         self.last_query = _FakeQuery(self._rows)
         return self.last_query
+
+    def add(self, row: Any) -> None:
+        self._rows.append(row)
+
+    def commit(self) -> None:
+        # 模拟自增主键
+        for row in self._rows:
+            if getattr(row, 'id', None) is None:
+                row.id = self._next_id
+                self._next_id += 1
+        self.commits += 1
 
 
 class _Row(types.SimpleNamespace):
@@ -290,6 +318,88 @@ class DBBoundaryTests(unittest.TestCase):
         self.assertIsNone(base)
         self.assertIsNone(target)
         self.assertEqual(payload, {'params': {}, 'metrics': {}})
+
+
+# ---------------------------------------------------------------------------
+# Phase 4.2 写入侧测试
+# ---------------------------------------------------------------------------
+
+
+class WriteSideTests(unittest.TestCase):
+    def test_start_run_inserts_with_running_status_and_assigns_id(self):
+        session = _FakeSession()
+        row = svc.start_run(
+            name='resnet50', version='v1', project_id=7,
+            experiment_id='exp-A', framework='pytorch',
+            dbsession=session,
+        )
+        self.assertEqual(row.name, 'resnet50')
+        self.assertEqual(row.status, 'running')
+        self.assertEqual(row.experiment_id, 'exp-A')
+        self.assertEqual(row.metrics, '{}')
+        self.assertEqual(row.params, '{}')
+        self.assertEqual(row.artifacts, '[]')
+        self.assertIsNotNone(row.run_id)
+        self.assertEqual(row.id, 1)
+        self.assertEqual(session.commits, 1)
+
+    def test_start_run_respects_explicit_run_id(self):
+        session = _FakeSession()
+        row = svc.start_run(name='x', version='v1', project_id=1,
+                            run_id='custom-run-xyz', dbsession=session)
+        self.assertEqual(row.run_id, 'custom-run-xyz')
+
+    def test_log_metric_merges_into_existing_dict(self):
+        # 注意：_FakeQuery.first() 会返回第一行；测试中 fake session 只放一行
+        target = _Row(run_id='r1', metrics='{"acc": 0.9}', params='{}', artifacts='[]')
+        session = _FakeSession([target])
+        row = svc.log_metric('r1', 'loss', 0.12, dbsession=session)
+        self.assertIs(row, target)
+        merged = json.loads(target.metrics)
+        self.assertEqual(merged, {'acc': 0.9, 'loss': 0.12})
+        self.assertEqual(session.commits, 1)
+
+    def test_log_metric_returns_none_when_run_missing(self):
+        session = _FakeSession([])
+        self.assertIsNone(svc.log_metric('missing', 'acc', 0.9, dbsession=session))
+        self.assertEqual(session.commits, 0)
+
+    def test_log_param_handles_dirty_json(self):
+        target = _Row(run_id='r1', metrics='{}', params='not-json', artifacts='[]')
+        session = _FakeSession([target])
+        svc.log_param('r1', 'lr', 0.001, dbsession=session)
+        # 脏数据被吞掉，重新起步为 {key: value}
+        self.assertEqual(json.loads(target.params), {'lr': 0.001})
+
+    def test_log_artifact_dedupes(self):
+        target = _Row(run_id='r1', metrics='{}', params='{}', artifacts='["/mnt/a.pt"]')
+        session = _FakeSession([target])
+        svc.log_artifact('r1', '/mnt/a.pt', dbsession=session)  # 重复
+        svc.log_artifact('r1', '/mnt/b.pt', dbsession=session)
+        self.assertEqual(json.loads(target.artifacts), ['/mnt/a.pt', '/mnt/b.pt'])
+
+    def test_finish_run_updates_status_and_optional_fields(self):
+        target = _Row(run_id='r1', metrics='{}', params='{}', artifacts='[]',
+                      status='running', log_url='', path='', md5='')
+        session = _FakeSession([target])
+        svc.finish_run('r1', status='success',
+                       log_url='http://tb/run1', path='/mnt/m.pt', md5='deadbeef',
+                       dbsession=session)
+        self.assertEqual(target.status, 'success')
+        self.assertEqual(target.log_url, 'http://tb/run1')
+        self.assertEqual(target.path, '/mnt/m.pt')
+        self.assertEqual(target.md5, 'deadbeef')
+
+    def test_finish_run_clamps_invalid_status_to_success(self):
+        target = _Row(run_id='r1', metrics='{}', params='{}', artifacts='[]',
+                      status='running', log_url='', path='', md5='')
+        session = _FakeSession([target])
+        svc.finish_run('r1', status='garbage', dbsession=session)
+        self.assertEqual(target.status, 'success')
+
+    def test_finish_run_returns_none_when_missing(self):
+        session = _FakeSession([])
+        self.assertIsNone(svc.finish_run('missing', dbsession=session))
 
 
 if __name__ == '__main__':
