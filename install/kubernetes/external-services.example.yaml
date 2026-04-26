@@ -38,3 +38,18 @@ data:
   HDFS_NAMESERVICE: "nameservice1"
   HDFS_BASE_PATH: "hdfs://nameservice1/ml"
   HARBOR_REGISTRY: "harbor.company.com"
+  # LiteLLM 网关：所有 OpenAI 兼容请求走它，避免每个推理服务镜像各自配 OpenAI key。
+  # 推理服务环境变量里把 OPENAI_API_BASE 指向这个地址即可。
+  LITELLM_BASE_URL: "http://litellm.company.local"
+  # 可选：cube-studio 内部默认的 OpenAI 兼容入口（与 LITELLM_BASE_URL 同值即可）
+  OPENAI_API_BASE: "http://litellm.company.local/v1"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cube-litellm-secret
+  namespace: infra
+type: Opaque
+stringData:
+  # LiteLLM 颁发的 master / virtual key；推理服务镜像通过 OPENAI_API_KEY 透传
+  LITELLM_API_KEY: "REPLACE_ME"
